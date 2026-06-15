@@ -70,6 +70,7 @@ class Arena{
         echo "1) Atacar\n";
         echo "2) Defender\n";
         echo "3) Usar Ult\n";
+        echo $resultado;
     }
 
     private function exibirResumo(): void{

@@ -15,4 +15,8 @@ class Necromante extends Personagem{
 
         return "{$this->nome} usou Decomposição em {$alvo->getNome()} causando {$dano} de dano.";
     } 
+
+    public function getTipo(): string{
+        return "Necromante";
+    }
 }
