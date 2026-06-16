@@ -21,9 +21,10 @@ class Arena{
             $atual->iniciarTurno();
 
             $acaoExecutada = false;
+            $resultado = "";
 
             while (!$acaoExecutada){
-                $this->exibirTelaCombate($numeroJogador, $atual, $oponente);
+                $this->exibirTelaCombate($numeroJogador, $atual, $oponente, $resultado);
 
                 try {
                     $opcao = trim(readline("Escolha uma opção: "));
@@ -38,9 +39,9 @@ class Arena{
                         "3" => $atual->ultar($oponente)
                     };
 
-                    echo "\nRESULTADO\n";
                     $this->log[] = "Turno {$this->turnos}: {$resultado}";
                     $acaoExecutada = true;
+                    $this->exibirTelaCombate($numeroJogador, $atual, $oponente, $resultado);
 
                     readline("\nPressione ENTER para continuar...");
                 } catch (ManaInsuficienteException | EntradaInvalidaException $e) {
@@ -55,14 +56,14 @@ class Arena{
         $this->exibirResumo();
     }
 
-    private function exibirTelaCombate(int $numeroJogador, Personagem $atual, Personagem $oponente): void{
+    private function exibirTelaCombate(int $numeroJogador, Personagem $atual, Personagem $oponente, string $resultado): void{
         system('clear');
 
-        echo "=== ARENA DE BATALHA ===\n";
+        echo "=== ARENA DE BATALHA ===\n\n";
 
-        echo "Vez do Jogador {$numeroJogador})\n";
-        echo "HP: {$this->jogador1->getVida()} / {$this->jogador1->getVidaMaxima()}\n";
-        echo "HP: {$this->jogador2->getVida()} / {$this->jogador2->getVidaMaxima()}\n\n";
+        echo "Vez do Jogador {$numeroJogador})\n\n";
+        echo "{$this->jogador1->getNome()} - Classe: {$this->jogador1->getTipo()} HP: {$this->jogador1->getVida()} / {$this->jogador1->getVidaMaxima()}  Mana: {$this->jogador1->getMana()}\n";
+        echo "{$this->jogador2->getNome()} - Classe: {$this->jogador2->getTipo()} HP: {$this->jogador2->getVida()} / {$this->jogador2->getVidaMaxima()}  Mana: {$this->jogador2->getMana()}\n\n";
 
         echo "Mana de {$atual->getNome()}: {$atual->getMana()}\n";
 
@@ -70,7 +71,10 @@ class Arena{
         echo "1) Atacar\n";
         echo "2) Defender\n";
         echo "3) Usar Ult\n";
-        echo $resultado;
+
+        if ($resultado !== "") {
+            echo "{$resultado}\n";
+        }
     }
 
     private function exibirResumo(): void{
@@ -90,4 +94,4 @@ class Arena{
         }
         
     }
-} 
+}

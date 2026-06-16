@@ -13,7 +13,7 @@ class Necromante extends Personagem{
         $dano = max(self::DANO_MINIMO, 40 - $alvo->getDefesaAtual());
         $alvo->receberDano($dano);
 
-        return "{$this->nome} usou Decomposição em {$alvo->getNome()} causando {$dano} de dano.";
+        return "{$this->nome} (Necromante) usou Decomposição em {$alvo->getNome()} causando {$dano} de dano.";
     } 
 
     public function getTipo(): string{

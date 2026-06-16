@@ -16,7 +16,7 @@ class Mago extends Personagem{
         $cura = 10;
         $this->curar($cura);
 
-        return "{$this->nome} usou Chama Arcana em {$alvo->getNome()} causando {$dano} de dano e recuperando {$cura} de vida.";
+        return "{$this->nome} (Mago) usou Chama Arcana em {$alvo->getNome()} causando {$dano} de dano e recuperando {$cura} de vida.";
     }
 
     public function getTipo(): string{

@@ -10,6 +10,10 @@ abstract class Personagem implements CombatenteInterface {
     protected int $vida;
     protected int $vidaMaxima;
     protected int $poderAtaque;
+    protected int $bonusAtaque = 0;
+    protected int $turnosBonusAtaque = 0;
+    protected int $bonusDefesa = 0;
+    protected int $turnosBonusDefesa = 0;
     protected int $defesa;
     protected int $mana;
     protected int $manaMaxima;
@@ -32,8 +36,19 @@ abstract class Personagem implements CombatenteInterface {
     }
 
     public function atacar(Personagem $alvo): string{    
-        $dano = max(self::DANO_MINIMO, $this->poderAtaque - $alvo->getDefesaAtual());
+        
+        $poderAtaqueAtual = $this->poderAtaque + $this->bonusAtaque;
+        
+        $dano = max(self::DANO_MINIMO, $poderAtaqueAtual - $alvo->getDefesaAtual());
         $alvo->receberDano($dano);
+
+        if ($this->turnosBonusAtaque > 0) {
+            $this->turnosBonusAtaque--;
+
+            if ($this->turnosBonusAtaque === 0) {
+                $this->bonusAtaque = 0;
+            }
+        }
 
         return "{$this->nome} atacou {$alvo->getNome()} causando {$dano} de dano.";
     }
@@ -84,7 +99,13 @@ abstract class Personagem implements CombatenteInterface {
     }
 
     public function getDefesaAtual(): int{
-        return $this->defendendo ? $this->defesa + self::BONUS_DEFESA : $this->defesa;
+        $defesaAtual = $this->defesa + $this->bonusDefesa;
+
+        if ($this->defendendo) {
+            $defesaAtual += self::BONUS_DEFESA;
+        }
+
+        return $defesaAtual;
     }
 
     public function estaVivo(): bool{

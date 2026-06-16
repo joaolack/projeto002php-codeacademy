@@ -5,6 +5,8 @@ require_once __DIR__ . "/src/Personagens/Personagem.php";
 require_once __DIR__ . "/src/Personagens/Berserker.php";
 require_once __DIR__ . "/src/Personagens/Mago.php";
 require_once __DIR__ . "/src/Personagens/Necromante.php";
+require_once __DIR__ . "/src/Personagens/Monk.php";
+require_once __DIR__ . "/src/Personagens/Knight.php";
 require_once __DIR__ . "/src/Jogo/Arena.php";
 require_once __DIR__ . "/src/Exceptions/ManaInsuficienteException.php";
 require_once __DIR__ . "/src/Exceptions/EntradaInvalidaException.php";
@@ -35,11 +37,13 @@ function escolherPersonagem(int $numeroJogador): Personagem{
 
         echo $GLOBALS['title'] . "\n\n";
 
-        echo "====SELEÇÃO DE PERSONAGEM=====\n\n";
+        echo "===== SELEÇÃO DE PERSONAGEM =====\n\n";
         echo "Player *{$numeroJogador}*, choose your class: \n\n";
         echo "1. Berserker\n";
         echo "2. Mage\n";
-        echo "3. Necromancer\n\n";
+        echo "3. Necromancer\n";
+        echo "4. Monge\n";
+        echo "5. Cavaleiro\n\n";
 
         $opcao = trim(readline("Opção: "));
         $nome = "Jogador {$numeroJogador}";
@@ -49,6 +53,8 @@ function escolherPersonagem(int $numeroJogador): Personagem{
                 "1" => new Berserker($nome),
                 "2" => new Mago($nome),
                 "3" => new Necromante($nome),
+                "4" => new Monk($nome),
+                "5" => new Knight($nome),
                 default => throw new EntradaInvalidaException("Opção Inválida."),
             };
         } catch (EntradaInvalidaException $e) {
