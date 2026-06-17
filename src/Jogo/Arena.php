@@ -11,6 +11,29 @@ class Arena{
         $this->jogador2 = $jogador2;
     }
 
+    private function hpBar(Personagem $personagem): string{
+        $width = 20;
+        $vida = $personagem->getVida();
+        $vidaMaxima = $personagem->getVidaMaxima();
+        $percentage = $vida / $vidaMaxima;
+        $filled = (int) round($percentage * $width);
+        $empty = $width - $filled;
+
+        if ($percentage > 0.6) {
+            $color = "\033[32m";
+        } elseif ($percentage > 0.3) {
+            $color = "\033[33m";
+        } else {
+            $color = "\033[31m";
+        }
+
+        $bar = 
+            str_repeat("█", $filled) . 
+            str_repeat("░", $empty);
+
+        return "{$color}[{$bar}]\033[0m {$vida}/{$vidaMaxima}";
+    }
+
     public function iniciar(): void{
         $atual = $this->jogador1;
         $oponente = $this->jogador2;
@@ -61,9 +84,11 @@ class Arena{
 
         echo "=== ARENA DE BATALHA ===\n\n";
 
-        echo "Vez do Jogador {$numeroJogador})\n\n";
-        echo "{$this->jogador1->getNome()} - Classe: {$this->jogador1->getTipo()} HP: {$this->jogador1->getVida()} / {$this->jogador1->getVidaMaxima()}  Mana: {$this->jogador1->getMana()}\n";
-        echo "{$this->jogador2->getNome()} - Classe: {$this->jogador2->getTipo()} HP: {$this->jogador2->getVida()} / {$this->jogador2->getVidaMaxima()}  Mana: {$this->jogador2->getMana()}\n\n";
+
+
+        echo "VEZ DO JOGADOR {$numeroJogador})\n\n";
+        echo "{$this->jogador1->getNome()} - Classe: {$this->jogador1->getTipo()} HP: {$this->hpBar($this->jogador1)} Defesa: {$this->jogador1->getDefesaAtual()} Mana: {$this->jogador1->getMana()}\n";
+        echo "{$this->jogador2->getNome()} - Classe: {$this->jogador2->getTipo()} HP: {$this->hpBar($this->jogador2)} Defesa: {$this->jogador2->getDefesaAtual()} Mana: {$this->jogador2->getMana()}\n\n";
 
         echo "Mana de {$atual->getNome()}: {$atual->getMana()}\n";
 
@@ -83,7 +108,7 @@ class Arena{
         $vencedor = $this->jogador1->estaVivo() ? $this->jogador1 : $this->jogador2;
 
         echo "=== FIM DA BATALHA ===\n";
-        echo "Vencedor: {$vencedor->getNome()}({$vencedor->getTipo()})\n";
+        echo "Vencedor: {$vencedor->getNome()} Classe: ({$vencedor->getTipo()})\n";
         echo "Turnos jogados: {$this->turnos}\n";
         echo "Vida restante: {$vencedor->getVida()} / {$vencedor->getVidaMaxima()}\n";
 
