@@ -128,6 +128,10 @@ abstract class Personagem implements CombatenteInterface {
         return $this->mana;
     }
 
+    public function getManaMaxima(): int{
+        return $this->manaMaxima;
+    }
+
     abstract public function getTipo(): string;
 
 }

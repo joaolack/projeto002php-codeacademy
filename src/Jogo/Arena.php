@@ -34,6 +34,22 @@ class Arena{
         return "{$color}[{$bar}]\033[0m {$vida}/{$vidaMaxima}";
     }
 
+    private function manaBar(Personagem $personagem): string{
+        $width = 10;
+        $mana = $personagem->getMana();
+        $manaMaxima = $personagem->getManaMaxima();
+        $percentage = $mana / $manaMaxima;
+        $filled = (int) round($percentage * $width);
+        $empty = $width - $filled;
+        $color = "\033[94m";
+
+        $bar =
+            str_repeat("█", $filled) . 
+            str_repeat("░", $empty);
+
+        return "{$color}[$bar]\033[0m {$mana}/{$manaMaxima}";
+    }
+
     public function iniciar(): void{
         $atual = $this->jogador1;
         $oponente = $this->jogador2;
@@ -87,8 +103,8 @@ class Arena{
 
 
         echo "VEZ DO JOGADOR {$numeroJogador})\n\n";
-        echo "{$this->jogador1->getNome()} - Classe: {$this->jogador1->getTipo()} HP: {$this->hpBar($this->jogador1)} Defesa: {$this->jogador1->getDefesaAtual()} Mana: {$this->jogador1->getMana()}\n";
-        echo "{$this->jogador2->getNome()} - Classe: {$this->jogador2->getTipo()} HP: {$this->hpBar($this->jogador2)} Defesa: {$this->jogador2->getDefesaAtual()} Mana: {$this->jogador2->getMana()}\n\n";
+        echo "{$this->jogador1->getNome()} - Classe: {$this->jogador1->getTipo()} HP: {$this->hpBar($this->jogador1)} Defesa: {$this->jogador1->getDefesaAtual()} Mana: {$this->manaBar($this->jogador1)}\n";
+        echo "{$this->jogador2->getNome()} - Classe: {$this->jogador2->getTipo()} HP: {$this->hpBar($this->jogador2)} Defesa: {$this->jogador2->getDefesaAtual()} Mana: {$this->manaBar($this->jogador2)}\n\n";
 
         echo "Mana de {$atual->getNome()}: {$atual->getMana()}\n";
 
