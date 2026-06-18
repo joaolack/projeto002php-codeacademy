@@ -40,6 +40,8 @@ abstract class Personagem implements CombatenteInterface {
         $poderAtaqueAtual = $this->poderAtaque + $this->bonusAtaque;
         
         $dano = max(self::DANO_MINIMO, $poderAtaqueAtual - $alvo->getDefesaAtual());
+        $this->onDamageCalc($dano, $alvo);
+        $this->onBasicAttack($dano, $alvo);
         $alvo->receberDano($dano);
 
         if ($this->turnosBonusAtaque > 0) {
@@ -60,6 +62,10 @@ abstract class Personagem implements CombatenteInterface {
     }
 
     abstract public function ultar(Personagem $alvo): string;
+
+    public function onBasicAttack(int &$dano, Personagem $alvo): void{ }
+
+    public function onDamageCalc(int &$dano, Personagem $alvo): void{ }
 
     public function iniciarTurno(): void{
         $this->defendendo = false;

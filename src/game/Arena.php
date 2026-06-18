@@ -41,7 +41,7 @@ class Arena{
         $percentage = $mana / $manaMaxima;
         $filled = (int) round($percentage * $width);
         $empty = $width - $filled;
-        $color = "\033[94m";
+        $color = "\033[36m";
 
         $bar =
             str_repeat("█", $filled) . 
