@@ -57,6 +57,7 @@ abstract class Personagem implements CombatenteInterface {
 
     public function defender(): string{
         $this->defendendo = true;
+        $this->onDefend();
 
         return "{$this->nome} assumiu postura defensiva e ganhou +".self::BONUS_DEFESA." de defesa até o próximo turno.";
     }
@@ -66,6 +67,8 @@ abstract class Personagem implements CombatenteInterface {
     public function onBasicAttack(int &$dano, Personagem $alvo): void{ }
 
     public function onDamageCalc(int &$dano, Personagem $alvo): void{ }
+
+    public function onDefend(): void{ }
 
     public function iniciarTurno(): void{
         $this->defendendo = false;

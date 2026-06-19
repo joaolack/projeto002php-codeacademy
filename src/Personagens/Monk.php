@@ -12,19 +12,26 @@ class Monk extends Personagem{
     public function onBasicAttack(int &$dano, Personagem $alvo): void{
         $this->countBasicAttacks++;
 
-        if ($this->countBasicAttacks > 0 && $this->countBasicAttacks <= 1){
-            $dano += $dano * 0.1;
-        } elseif ($this->countBasicAttacks > 1 && $this->countBasicAttacks < 3){
+        if ($this->countBasicAttacks === 2){
             $dano += $dano * 0.2;
-        } elseif ($this->countBasicAttacks >= 3){
-            $dano += $dano * 0.3;
+        } elseif ($this->countBasicAttacks === 3){
+            $dano += $dano * 0.4;
+        } elseif ($this->countBasicAttacks >= 4) {
+            $dano += $dano * 0.6;
         } else {
-            $dano += 0;
+            $dano = $dano;
         }
+    }
+
+    public function onDefend(): void{
+        $this->countBasicAttacks = 0;
+
     }
 
     public function ultar(Personagem $alvo): string{
         $this->consumirMana(self::CUSTO_PUNHO_SUAVE);
+
+        $this->countBasicAttacks = 0;
 
         $this->bonusAtaque = 10;
         $this->turnosBonusAtaque = 3;

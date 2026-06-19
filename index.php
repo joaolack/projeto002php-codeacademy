@@ -43,7 +43,7 @@ function escolherPersonagem(int $numeroJogador): Personagem{
         echo "[1] Berserker - Passiva: \033[1mFúria Crescente\033[0m - Para cada 2% de vida perdida, ganha 1% de dano adicional, até o máximo de 50%.\n";
         echo "[2] Mage - Passiva: \n";
         echo "[3] Necromancer - Passiva: \n";
-        echo "[4] Monge - Passiva: \033[1mSerenidade\033[0m - Ataques básicos consecutivos aumentam o dano de ataque, até o máximo de 3 acúmulos.\n";
+        echo "[4] Monge - Passiva: \033[1mSerenidade\033[0m - Ataques básicos consecutivos aumentam o dano em até 60%. Defender ou usar ult reinicia os acúmulos.\n";
         echo "[5] Cavaleiro - Passiva: \n\n";
 
         $opcao = trim(readline("Digite sua opção: "));
