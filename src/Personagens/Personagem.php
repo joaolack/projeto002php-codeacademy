@@ -72,8 +72,17 @@ abstract class Personagem implements CombatenteInterface {
 
     public function iniciarTurno(): void{
         $this->defendendo = false;
-        $this->regenerarMana();
-    }
+        $this->recuperarMana(self::REGENERACAO_MANA);
+
+        if ($this->turnosBonusDefesa > 0) {
+            $this->turnosBonusDefesa--;
+
+            if ($this->turnosBonusDefesa === 0) {
+                $this->bonusDefesa = 0;
+            }
+        
+        }
+    }    
     
     public function receberDano(int $dano): void{
         $this->vida -= $dano;
@@ -99,8 +108,8 @@ abstract class Personagem implements CombatenteInterface {
         $this->mana -= $custo;
     }
 
-    protected function regenerarMana(): void{
-        $this->mana += self::REGENERACAO_MANA;
+    protected function recuperarMana(int $quantidade): void{
+        $this->mana += $quantidade;
 
         if ($this->mana > $this->manaMaxima) {
             $this->mana = $this->manaMaxima;

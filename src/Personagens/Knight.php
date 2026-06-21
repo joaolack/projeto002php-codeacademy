@@ -7,6 +7,15 @@ class Knight extends Personagem{
         parent::__construct($nome, 130, 20, 15, 40);
     }
 
+    public function onDefend(): void{
+        $defesa = $this->getDefesaAtual();
+
+        $bonus = (int) round($defesa * 0.3);
+    
+        $this->bonusAtaque = $bonus;
+        $this->turnosBonusAtaque = 1;
+    }
+
     public function ultar(Personagem $alvo): string{
         $this->consumirMana(self::CUSTO_ARMADURA_PESADA);
 
