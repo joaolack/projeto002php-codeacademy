@@ -1,21 +1,21 @@
 <?php
 
 class Arena{
-    private Personagem $jogador1;
-    private Personagem $jogador2;
-    private int $turnos = 0;
+    private Character $playerOne;
+    private Character $playerTwo;
+    private int $turns = 0;
     private array $log = [];
 
-    public function __construct(Personagem $jogador1, Personagem $jogador2){
-        $this->jogador1 = $jogador1;
-        $this->jogador2 = $jogador2;
+    public function __construct(Character $playerOne, Character $playerTwo){
+        $this->playerOne = $playerOne;
+        $this->playerTwo = $playerTwo;
     }
 
-    private function hpBar(Personagem $personagem): string{
+    private function hpBar(Character $character): string{
         $width = 20;
-        $vida = $personagem->getVida();
-        $vidaMaxima = $personagem->getVidaMaxima();
-        $percentage = $vida / $vidaMaxima;
+        $health = $character->getHealth();
+        $maxHealth = $character->getMaxHealth();
+        $percentage = $health / $maxHealth;
         $filled = (int) round($percentage * $width);
         $empty = $width - $filled;
 
@@ -31,14 +31,14 @@ class Arena{
             str_repeat("█", $filled) . 
             str_repeat("░", $empty);
 
-        return "{$color}[{$bar}]\033[0m {$vida}/{$vidaMaxima}";
+        return "{$color}[{$bar}]\033[0m {$health}/{$maxHealth}";
     }
 
-    private function manaBar(Personagem $personagem): string{
+    private function manaBar(Character $character): string{
         $width = 10;
-        $mana = $personagem->getMana();
-        $manaMaxima = $personagem->getManaMaxima();
-        $percentage = $mana / $manaMaxima;
+        $mana = $character->getMana();
+        $maxMana = $character->getMaxMana();
+        $percentage = $mana / $maxMana;
         $filled = (int) round($percentage * $width);
         $empty = $width - $filled;
         $color = "\033[36m";
@@ -47,92 +47,89 @@ class Arena{
             str_repeat("█", $filled) . 
             str_repeat("░", $empty);
 
-        return "{$color}[$bar]\033[0m {$mana}/{$manaMaxima}";
+        return "{$color}[$bar]\033[0m {$mana}/{$maxMana}";
     }
 
-    public function iniciar(): void{
-        $atual = $this->jogador1;
-        $oponente = $this->jogador2;
-        $numeroJogador = 1;
+    public function start(): void{
+        $currentPlayer = $this->playerOne;
+        $opponent = $this->playerTwo;
+        $playerNumber = 1;
 
-        while ($this->jogador1->estaVivo() && $this->jogador2->estaVivo()){
-            $this->turnos++;
-            $atual->iniciarTurno();
+        while ($this->playerOne->isAlive() && $this->playerTwo->isAlive()){
+            $this->turns++;
+            $currentPlayer->startTurn();
 
-            $acaoExecutada = false;
-            $resultado = "";
+            $actionExecuted = false;
+            $result = "";
 
-            while (!$acaoExecutada){
-                $this->exibirTelaCombate($numeroJogador, $atual, $oponente, $resultado);
+            while (!$actionExecuted){
+                $this->showCombatScreen($playerNumber, $currentPlayer, $opponent, $result);
 
                 try {
-                    $opcao = trim(readline("Escolha uma opção: "));
+                    $option = trim(readline("Escolha uma opção: "));
 
-                    if(!in_array($opcao, ["1", "2", "3"])){
-                        throw new EntradaInvalidaException("Opção Inválida.");
+                    if(!in_array($option, ["1", "2", "3"])){
+                        throw new InvalidEntryException("Opção Inválida.");
                     }
 
-                    $resultado = match ($opcao) {
-                        "1" => $atual->atacar($oponente),
-                        "2" => $atual->defender(),
-                        "3" => $atual->ultar($oponente)
+                    $result = match ($option) {
+                        "1" => $currentPlayer->attack($opponent),
+                        "2" => $currentPlayer->defend(),
+                        "3" => $currentPlayer->useUltimate($opponent)
                     };
 
-                    $this->log[] = "Turno {$this->turnos}: {$resultado}";
-                    $acaoExecutada = true;
-                    $this->exibirTelaCombate($numeroJogador, $atual, $oponente, $resultado);
+                    $this->log[] = "Turno {$this->turns}: {$result}";
+                    $actionExecuted = true;
+                    $this->showCombatScreen($playerNumber, $currentPlayer, $opponent, $result);
 
                     readline("\nPressione ENTER para continuar...");
-                } catch (ManaInsuficienteException | EntradaInvalidaException $e) {
+                } catch (InsufficientManaException | InvalidEntryException $e) {
                     echo "\nErro: {$e->getMessage()}\n ";
                     readline("Pressione ENTER para tentar novamente...");
                 }
             }
 
-            [$atual, $oponente] = [$oponente, $atual];
-            $numeroJogador = $numeroJogador === 1 ? 2 : 1;
+            [$currentPlayer, $opponent] = [$opponent, $currentPlayer];
+            $playerNumber = $playerNumber === 1 ? 2 : 1;
         }
-        $this->exibirResumo();
+        $this->showSummary();
     }
 
-    private function exibirTelaCombate(int $numeroJogador, Personagem $atual, Personagem $oponente, string $resultado): void{
-        system('clear');
+    private function showCombatScreen(int $playerNumber, Character $currentPlayer, Character $opponent, string $result): void{
+        system(PHP_OS_FAMILY === 'Windows' ? 'cls' : 'clear');
 
         echo "=== ARENA DE BATALHA ===\n\n";
 
+        echo "VEZ DO JOGADOR {$playerNumber})\n\n";
+        echo "{$this->playerOne->getName()} - Classe: {$this->playerOne->getType()} HP: {$this->hpBar($this->playerOne)} Defesa: {$this->playerOne->getCurrentDefense()} Mana: {$this->manaBar($this->playerOne)}\n";
+        echo "{$this->playerTwo->getName()} - Classe: {$this->playerTwo->getType()} HP: {$this->hpBar($this->playerTwo)} Defesa: {$this->playerTwo->getCurrentDefense()} Mana: {$this->manaBar($this->playerTwo)}\n\n";
 
-
-        echo "VEZ DO JOGADOR {$numeroJogador})\n\n";
-        echo "{$this->jogador1->getNome()} - Classe: {$this->jogador1->getTipo()} HP: {$this->hpBar($this->jogador1)} Defesa: {$this->jogador1->getDefesaAtual()} Mana: {$this->manaBar($this->jogador1)}\n";
-        echo "{$this->jogador2->getNome()} - Classe: {$this->jogador2->getTipo()} HP: {$this->hpBar($this->jogador2)} Defesa: {$this->jogador2->getDefesaAtual()} Mana: {$this->manaBar($this->jogador2)}\n\n";
-
-        echo "Mana de {$atual->getNome()}: {$atual->getMana()}\n";
+        echo "Mana de {$currentPlayer->getName()}: {$currentPlayer->getMana()}\n";
 
         echo "\nAções disponíveis:\n";
         echo "1) Atacar\n";
         echo "2) Defender\n";
         echo "3) Usar Ult\n";
 
-        if ($resultado !== "") {
-            echo "{$resultado}\n";
+        if ($result !== "") {
+            echo "{$result}\n";
         }
     }
 
-    private function exibirResumo(): void{
-        system('clear');
+    private function showSummary(): void{
+        system(PHP_OS_FAMILY === 'Windows' ? 'cls' : 'clear');
         
-        $vencedor = $this->jogador1->estaVivo() ? $this->jogador1 : $this->jogador2;
+        $winner = $this->playerOne->isAlive() ? $this->playerOne : $this->playerTwo;
 
         echo "=== FIM DA BATALHA ===\n";
-        echo "Vencedor: {$vencedor->getNome()} Classe: ({$vencedor->getTipo()})\n";
-        echo "Turnos jogados: {$this->turnos}\n";
-        echo "Vida restante: {$vencedor->getVida()} / {$vencedor->getVidaMaxima()}\n";
+        echo "Vencedor: {$winner->getName()} Classe: ({$winner->getType()})\n";
+        echo "Turnos jogados: {$this->turns}\n";
+        echo "Vida restante: {$winner->getHealth()} / {$winner->getMaxHealth()}\n";
 
         echo "\n=== LOG DA BATALHA ===\n";
 
-        foreach ($this->log as $linha) {
-            echo $linha . "\n";
+        foreach ($this->log as $line) {
+            echo $line . "\n";
         }
-        
     }
 }
