@@ -4,23 +4,43 @@ Protótipo de jogo de combate 1 contra 1 executado no terminal com PHP. Dois jog
 
 ## Requisitos
 
-- PHP instalado e disponível no terminal.
+Para rodar com Docker:
 
-Para verificar a instalação do PHP:
+- Docker instalado.
+- Docker Compose disponível no terminal.
+
+Você não precisa ter PHP instalado localmente se for executar pelo Docker.
+
+Para verificar a instalação do Docker:
 
 ```bash
-php -v
+docker --version
+docker compose version
 ```
 
-## Execução
+## Execução com Docker
 
-No terminal, dentro da pasta do projeto (src), execute:
+No terminal, dentro da pasta raiz do projeto, construa a imagem:
+
+```bash
+docker compose build
+```
+
+Depois execute o jogo de forma interativa:
+
+```bash
+docker compose run --rm app php index.php
+```
+
+O jogo vai pedir a escolha de classe do Jogador 1 e do Jogador 2. Depois disso, a batalha começa automaticamente.
+
+## Execução local sem Docker
+
+Se preferir rodar diretamente na máquina, instale o PHP e execute o projeto pela raiz:
 
 ```bash
 php index.php
 ```
-
-O jogo vai pedir a escolha de classe do Jogador 1 e do Jogador 2. Depois disso, a batalha começa automaticamente.
 
 ## Ações de Combate
 
@@ -98,4 +118,3 @@ Após defender, o próximo ataque básico causa dano adicional baseado na defesa
 Ult: **Armadura Pesada**
 
 Aumenta a defesa em 20% por 2 turnos.
-
